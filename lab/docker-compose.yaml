@@ -1,0 +1,96 @@
+version: "3.9"
+services:
+  gateway:
+    build: 
+      context: ./gateway/
+      dockerfile: Dockerfile
+    container_name: gateway
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+      - seccomp=default
+      - apparmor=docker-default
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - gateway_data:/data:ro
+      - ./init.sh:/init.sh:ro
+    tmpfs:
+      - /tmp:size=100M,noexec
+      - /run:size=50M
+    entrypoint: ["/bin/bash", "/init.sh", "/bin/zsh"]
+    networks:
+      malware_net:
+        ipv4_address: 192.168.1.1
+    sysctls:
+      - net.ipv4.ip_forward=1
+    tty: true
+    stdin_open: true
+    ulimits:
+      nproc: 100
+      nofile:
+        soft: 1024
+        hard: 2048
+    mem_limit: 512M
+    pids_limit: 50
+
+  detonation:
+    build:
+      context: ./jail/
+      dockerfile: Dockerfile
+    container_name: detonation
+    cap_add:
+      - SYS_PTRACE
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+      - seccomp=default
+      - apparmor=docker-default
+    volumes:
+      - samples:/samples:ro
+    tmpfs:
+      - /tmp:size=200M,noexec
+      - /run:size=50M
+    networks:
+      malware_net:
+        ipv4_address: 192.168.1.100
+    entrypoint: ["/bin/bash", "-c", "route add default gw 192.168.1.1 && /bin/zsh"]
+    depends_on:
+      - gateway
+    dns: 192.168.1.1
+    tty: true
+    stdin_open: true
+    ulimits:
+      nproc: 100
+      nofile:
+        soft: 1024
+        hard: 2048
+    mem_limit: 1G
+    pids_limit: 100
+
+volumes:
+  samples:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /path/to/samples
+  gateway_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /path/to/gateway_data
+
+networks:
+  malware_net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24

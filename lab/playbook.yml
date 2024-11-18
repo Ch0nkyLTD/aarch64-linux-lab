@@ -1,0 +1,90 @@
+---
+- name: Configure Raspberry Pi
+  hosts: all 
+  become: yes
+  vars: 
+    user: "user"
+  tasks:
+    - name: Wait for apt lock to be released
+      shell: while lsof /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do sleep 1; done;
+      changed_when: false
+      
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        
+    - name: Install required packages
+      apt:
+        name:
+          - curl
+          - wget
+          - build-essential
+          - git
+          - zsh
+          - jq
+          - vim
+          - gdb
+          - python3-pip
+          - python3-venv
+          - ipython3
+          - binutils
+        state: present
+        
+    - name: Install Docker dependencies
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - software-properties-common
+          - gnupg
+        state: present
+        
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/raspbian/gpg
+        state: present
+        
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb [arch=arm64] https://download.docker.com/linux/raspbian {{ ansible_distribution_release }} stable
+        state: present
+    - name: Update apt cache for docker
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+    - name: install docker and related components
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: latest
+        update_cache: true
+      tags: install_docker 
+        
+    - name: Install Oh My Zsh
+      become_user: "{{ user }}"
+      shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --unattended
+      args:
+        creates: "~/.oh-my-zsh"
+        
+    - name: Set ZSH theme to darkblood
+      become_user: "{{ user }}"
+      lineinfile:
+        path: "~/.zshrc"
+        regexp: '^ZSH_THEME='
+        line: 'ZSH_THEME="darkblood"'
+        
+    - name: Set ZSH as default shell
+      user:
+        name: "{{ user }}"
+        shell: /bin/zsh
+        
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
