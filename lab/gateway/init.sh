@@ -10,7 +10,7 @@ iptables -A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED -j ACCE
 iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
 
 # Start INetSim (if needed)
-service inetsim start
+#service inetsim start
 
 # Keep container running
 exec "$@"
