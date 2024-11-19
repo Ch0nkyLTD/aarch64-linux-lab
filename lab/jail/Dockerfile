@@ -7,6 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install required packages
 RUN apt-get update && apt-get install -y \
+    gdb \
     vim \
     tmux \
     git \
@@ -42,6 +43,11 @@ RUN git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh \
     && cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc \
     && sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="darkblood"/' ~/.zshrc
 
+# install pwndebug 
+RUN git clone https://github.com/pwndbg/pwndbg
+WORKDIR /home/analyst/pwndbg
+RUN   ./setup.sh
+
 
 # Switch back to root for any additional configuration
 USER root
@@ -51,6 +57,23 @@ RUN mkdir -p /samples /data
 
 # Set permissions
 RUN chown -R analyst:analyst /samples /data
+user analyst
+WORKDIR /home/analyst
+# Default command
+CMD ["zsh"]
+
+
+
+# Switch back to root for any additional configuration
+USER root
+
+# Create necessary directories
+RUN mkdir -p /samples /data
+
+# Set permissions
+RUN chown -R analyst:analyst /samples /data
+
+
 
 USER analyst
 

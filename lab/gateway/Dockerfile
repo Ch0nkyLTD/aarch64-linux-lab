@@ -46,7 +46,9 @@ RUN git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh \
     && sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="darkblood"/' ~/.zshrc
 
 # install pwndebug 
-RUN git clone https://github.com/pwndbg/pwndbg && ./pwndbg/setup.sh
+RUN git clone https://github.com/pwndbg/pwndbg
+WORKDIR /home/analyst/pwndbg
+RUN   ./setup.sh
 
 
 # Switch back to root for any additional configuration
@@ -58,6 +60,6 @@ RUN mkdir -p /samples /data
 # Set permissions
 RUN chown -R analyst:analyst /samples /data
 user analyst
-
+WORKDIR /home/analyst
 # Default command
 CMD ["zsh"]
