@@ -52,5 +52,7 @@ RUN mkdir -p /samples /data
 # Set permissions
 RUN chown -R analyst:analyst /samples /data
 
+USER analyst
+
 # Default command
 CMD ["zsh"]

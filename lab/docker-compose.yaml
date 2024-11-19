@@ -35,8 +35,8 @@ services:
       nofile:
         soft: 1024
         hard: 2048
-    mem_limit: 512M
-    pids_limit: 50
+    mem_limit: 1G
+    pids_limit: 100
 
   detonation:
     build:

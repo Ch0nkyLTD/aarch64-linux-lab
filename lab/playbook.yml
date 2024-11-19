@@ -19,6 +19,7 @@
         name:
           - curl
           - wget
+          - tmux
           - build-essential
           - git
           - zsh
@@ -42,12 +43,13 @@
         
     - name: Add Docker GPG key
       apt_key:
-        url: https://download.docker.com/linux/raspbian/gpg
+        url: https://download.docker.com/linux/debian/gpg
         state: present
         
     - name: Add Docker repository
       apt_repository:
-        repo: deb [arch=arm64] https://download.docker.com/linux/raspbian {{ ansible_distribution_release }} stable
+        # dpkg --print-architecture
+        repo: deb [arch=arm64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
         state: present
     - name: Update apt cache for docker
       apt:
