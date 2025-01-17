@@ -1,0 +1,8 @@
+#cloud-config
+users:
+  - name: user
+    groups: wheel
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDhDN7Dt0kAEvk1aPJmBF2s77JEK906XjaBlEmbrgwgm user@spr-2025

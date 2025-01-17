@@ -1,0 +1,17 @@
+instance-id: instance-id-01
+local-hostname: gateway
+network:
+  version: 2
+  ethernets:
+    enp1s0:
+      dhcp4: true
+      gateway4: 10.10.9.1
+      nameservers:
+        addresses:
+          - 1.1.1.1
+          - 8.8.8.8
+          - 8.8.4.4
+    enp2s0:
+      dhcp4: false
+      addresses:
+        - 10.10.10.11/24
