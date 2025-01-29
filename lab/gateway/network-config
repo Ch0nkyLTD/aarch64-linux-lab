@@ -1,4 +1,4 @@
-instance-id: instance-id-01
+instance-id: instance-id-02
 local-hostname: gateway
 network:
   version: 2

@@ -1,0 +1,75 @@
+---
+- name: Set up Ubuntu machines
+  hosts: all
+  become: yes
+
+  vars:
+    ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+    common_packages:
+      - gdb
+      - zsh
+      - python3
+      - python3-pip
+      - curl
+      - wget
+      - tmux
+      - vim
+      - binutils
+      - ipython3
+      - git
+      - build-essential
+      - socat
+      - tshark
+      - netcat
+      - pipx
+    gateway_only_packages:
+      - mitmproxy
+      - inetsim
+
+  tasks:
+    - name: Install common packages
+      apt:
+        name: "{{ common_packages }}"
+        state: present
+        update_cache: yes
+
+    - name: Install Oh My Zsh
+      become_user: "user"
+      shell: |
+        if [ ! -d ~/.oh-my-zsh ]; then
+          sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+        fi
+      args:
+        executable: /bin/bash
+
+    - name: Install gateway-only packages
+      when: inventory_hostname == "gateway"
+      apt:
+        name: "{{ gateway_only_packages }}"
+        state: present
+        update_cache: yes
+
+    - name: Ensure pipx is installed
+      package:
+        name: pipx
+        state: present
+
+    - name: Ensure pipx path is set up
+      shell: "pipx ensurepath"
+      args:
+        executable: /bin/bash
+
+    - name: Install magic-wormhole using pipx
+      command: pipx install magic-wormhole
+      register: wormhole_install
+
+    - name: Install frida-tools using pipx
+      command: pipx install frida-tools
+      register: frida_install
+
+    - name: Display installation results
+      debug:
+        msg:
+          - "Magic-Wormhole: {{ wormhole_install.stdout }}"
+          - "Frida-Tools: {{ frida_install.stdout }}"
+

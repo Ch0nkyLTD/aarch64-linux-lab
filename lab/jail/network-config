@@ -1,5 +1,5 @@
 instance-id: instance-id-01
-local-hostname: gateway
+local-hostname: ch0nkyjail 
 network:
   version: 2
   ethernets:
@@ -15,3 +15,6 @@ network:
       dhcp4: false
       addresses:
         - 10.10.10.11/24
+      nameservers:
+        addresses:
+          - 10.10.10.10 
