@@ -4,7 +4,7 @@
   <bridge name="virbr2" stp="on" delay="0"/>
   <ip address="10.10.9.1" netmask="255.255.255.0">
     <dhcp>
-      <range start="10.10.9.100" end="10.10.9.200"/>
+      <range start="10.10.9.5" end="10.10.9.200"/>
     </dhcp>
   </ip>
 </network>
