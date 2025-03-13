@@ -43,14 +43,15 @@ if [ ! -f ~/.ssh/id_ed25519 ]; then
   log "New SSH public key: $NEW_PUB"
 else
   log "SSH key already exists."
+  NEW_PUB=$(cat ~/.ssh/id_ed25519.pub)
 fi
 
 # Run setup.sh from the cloned repository
 log "Running setup.sh in aarch64-linux-lab directory..."
 cd aarch64-linux-lab
 
-bash change_key gateway $NEW_PUB
-bash change_key jail $NEW_PUB
+bash change_key.sh gateway $NEW_PUB
+bash change_key.sh jail $NEW_PUB
 
 # Change to the lab directory and run its setup scripts
 log "Changing directory to lab and running setup.sh..."
