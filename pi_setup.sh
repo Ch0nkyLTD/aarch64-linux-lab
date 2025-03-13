@@ -1,19 +1,4 @@
 #!/bin/bash
-sudo apt-get update
-sudo apt-get install -y qemu-kvm qemu-utils virt-manager libvirt-daemon-system cpu-checker magic-wormhole libguestfs-tools git curl zsh python3 python3-venv python3-pip pipx sshfs build-essential tmux make vim
-pipx install --include-deps ansible
-pipx ensurepath --force
-
-cd ~/
-ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N "" && NEW_PUB=$(cat ~/.ssh/id_ed25519.pub)
-cd aarch64-linux-lab
-sudo bash setup.sh
-cd lab
-sudo bash setup.sh
-sudo bash net.sh
-tmux new-session -d -s my_session \; split-window -h \; send-keys -t my_session:0 "sudo bash jail_iso.sh" Enter \; send-keys -t my_session:1 "sudo bash gateway_iso.sh" Enter \; attach-session -t my_session
-
-#!/bin/bash
 # Exit on error, treat unset variables as errors, and catch errors in pipelines.
 set -euo pipefail
 
@@ -60,10 +45,6 @@ else
   log "SSH key already exists."
 fi
 
-# Clone the repository
-log "Cloning repository: aarch64-linux-lab"
-git clone https://github.com/Ch0nkyLTD/aarch64-linux-lab.git
-
 # Run setup.sh from the cloned repository
 log "Running setup.sh in aarch64-linux-lab directory..."
 cd aarch64-linux-lab
@@ -87,4 +68,4 @@ tmux new-session -d -s my_session \; \
 
 log "Setup complete."
 
-echo "all set! run tmux a -t my_session to view status of vm setup. once you see the login screen its ready s "
+echo "all set! run tmux a -t my_session to view status of vm setup. once you see the login screen its ready s  a"
