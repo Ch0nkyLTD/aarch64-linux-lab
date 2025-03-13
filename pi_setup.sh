@@ -6,7 +6,6 @@ pipx ensurepath --force
 
 cd ~/
 ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N "" && NEW_PUB=$(cat ~/.ssh/id_ed25519.pub)
-git clone https://github.com/Ch0nkyLTD/aarch64-linux-lab.git
 cd aarch64-linux-lab
 sudo bash setup.sh
 cd lab
@@ -88,4 +87,4 @@ tmux new-session -d -s my_session \; \
 
 log "Setup complete."
 
-echo "all set! run tmux a -t my_session to view status of vm setup. once you see the login screen its ready"
+echo "all set! run tmux a -t my_session to view status of vm setup. once you see the login screen its ready s "
