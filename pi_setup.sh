@@ -32,9 +32,6 @@ pipx install --include-deps ansible
 log "Ensuring pipx path is set..."
 pipx ensurepath --force
 
-# Change to the user's home directory
-cd ~/
-
 # Generate SSH key if it doesn't exist, and log the public key
 if [ ! -f ~/.ssh/id_ed25519 ]; then
   log "Generating new SSH key..."
@@ -48,14 +45,12 @@ fi
 
 # Run setup.sh from the cloned repository
 log "Running setup.sh in aarch64-linux-lab directory..."
-cd aarch64-linux-lab
-
-bash change_key.sh gateway $NEW_PUB
-bash change_key.sh jail $NEW_PUB
-
-# Change to the lab directory and run its setup scripts
-log "Changing directory to lab and running setup.sh..."
 cd lab
+
+echo "Using $NEW_PUB"
+bash change_key.sh ./gateway "$NEW_PUB"
+bash change_key.sh ./jail "$NEW_PUB"
+
 sudo bash setup.sh
 
 log "Running network setup script (net.sh)..."
