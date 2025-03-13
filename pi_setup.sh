@@ -48,7 +48,9 @@ fi
 # Run setup.sh from the cloned repository
 log "Running setup.sh in aarch64-linux-lab directory..."
 cd aarch64-linux-lab
-sudo bash setup.sh
+
+bash change_key gateway $NEW_PUB
+bash change_key jail $NEW_PUB
 
 # Change to the lab directory and run its setup scripts
 log "Changing directory to lab and running setup.sh..."
@@ -63,9 +65,11 @@ log "Starting tmux session 'my_session' with jail_iso.sh and gateway_iso.sh..."
 tmux new-session -d -s my_session \; \
   split-window -h \; \
   send-keys -t my_session:0.0 "sudo bash jail_iso.sh" C-m \; \
-  send-keys -t my_session:0.1 "sudo bash gateway_iso.sh" C-m \; \
-  attach-session -t my_session
+  send-keys -t my_session:0.1 "sudo bash gateway_iso.sh" C-m \;
+
+#tmux attach-session -t my_session
 
 log "Setup complete."
-
+bash poll.sh
+ansible-playbook playbook.yml -i inventory.ini
 echo "all set! run tmux a -t my_session to view status of vm setup. once you see the login screen its ready s  a"
